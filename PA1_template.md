@@ -13,13 +13,15 @@ Show any code that is needed to:
 
 1. Load the data (i.e. read.csv())
 
-```{r, echo=TRUE}
+
+```r
 stepsData<- read.csv("activity.csv")
 ```
 
 2. Process/transform the data (if necessary) into a format suitable for your analysis
 
-```{r, echo=TRUE}
+
+```r
 stepsData$date <- as.Date(stepsData$date)
 ```
 
@@ -31,8 +33,8 @@ For this part of the assignment, you can ignore the missing values in the datase
 
 2.Calculate and report the mean and median total number of steps taken per day
 
-```{r, echo=TRUE}
 
+```r
 stepsCleanData <- stepsData[complete.cases(stepsData), ]
 
 library(plyr)
@@ -42,16 +44,28 @@ stepsByDate <- ddply(stepsCleanData, ~date, summarize, sum = sum(steps))
 hist(stepsByDate$sum, col = "red", xlab = "Total steps", main = "Total number of daily steps")
 ```
 
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png) 
+
 Mean total number of steps taken per day:
-```{r, echo=TRUE}
+
+```r
 stepsMean <- mean(stepsByDate$sum)
 stepsMean
 ```
 
+```
+## [1] 10766.19
+```
+
 Median total number of steps taken per day:
-```{r, echo=TRUE}
+
+```r
 stepsMedian <- median(stepsByDate$sum)
 stepsMedian
+```
+
+```
+## [1] 10765
 ```
 
 # What is the average daily activity pattern?
@@ -60,13 +74,17 @@ stepsMedian
 
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r, echo=TRUE}
+
+```r
 stepsBy5MinInterval <- ddply(stepsCleanData, ~interval, summarize, mean = mean(steps))
 plot(stepsBy5MinInterval$interval, stepsBy5MinInterval$mean, type = "l", xlab = "5-minute interval", ylab = "Average of steps", main = "All days average number of steps")
 ```
 
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
+
 Interval that contains the maximum numbr of steps:
-```{r, echo=TRUE}
+
+```r
 FiveMinMaxInterval <- stepsBy5MinInterval[which.max(stepsBy5MinInterval$mean), 1]
 ```
 
@@ -85,24 +103,32 @@ Note that there are a number of days/intervals where there are missing values (c
 
 
 Total number of missing values in the dataset:
-```{r, echo=TRUE}
+
+```r
 missData <- sum(is.na(stepsData$steps))
 missData
 ```
 
+```
+## [1] 2304
+```
+
 To fill the missing values i'm using the mean for the 5 minute interval.
-```{r, echo=TRUE}
+
+```r
 filledData<-merge(stepsData, stepsBy5MinInterval, by = "interval")
 filledData$steps[is.na(filledData$steps)]<- filledData$mean[is.na(filledData$steps)]
 ```
 
 New dataset with all values filled in:
-```{r, echo=TRUE}
+
+```r
 fullStepsData<-filledData[, c(2, 3, 1)]
 ```
 
 Histogram of the total number of steps, side-by-side with the original data histogram to observe differences:
-```{r, echo=TRUE}
+
+```r
 fullStepsByDate <- ddply(fullStepsData, ~date, summarize, sum = sum(steps))
 
 par(mfrow = c(1,2))
@@ -110,18 +136,30 @@ hist(fullStepsByDate$sum, col = "green", xlab = "Total steps", main = "Total dai
 hist(stepsByDate$sum, col = "red", xlab = "Total steps", main = "Total daily number of steps, with NAs")
 ```
 
+![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png) 
+
 Mean and median total number of steps taken per day
 
 Mean:
-```{r, echo=TRUE}
+
+```r
 fullStepsMean <- mean(fullStepsByDate$sum)
 fullStepsMean
 ```
 
+```
+## [1] 10766.19
+```
+
 Median:
-```{r, echo=TRUE}
+
+```r
 fullStepsMedian <- median(fullStepsByDate$sum)
 fullStepsMedian
+```
+
+```
+## [1] 10766.19
 ```
 
 Are the values different? According to the calculation, not in a significant way.
@@ -141,7 +179,8 @@ For this part the weekdays() function may be of some help here. Use the dataset 
 2.Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
 
 
-```{r, echo=TRUE}
+
+```r
 fullStepsData$weekdayName<-weekdays(fullStepsData$date)
 
 fullStepsData$weekdayType <- ifelse(fullStepsData$weekdayName == "Saturday" | fullStepsData$weekdayName == "Sunday", "weekend", "weekday")
@@ -156,3 +195,5 @@ stepsByIntervalAndWeekdayType$interval <- as.numeric(as.character(stepsByInterva
 xyplot(mean ~ interval | weekdayType, stepsByIntervalAndWeekdayType, 
        layout= c(1,2), type = "l", xlab = "time interval", ylab = "number of steps")
 ```
+
+![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14-1.png) 
