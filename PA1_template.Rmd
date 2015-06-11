@@ -65,7 +65,7 @@ stepsBy5MinInterval <- ddply(stepsCleanData, ~interval, summarize, mean = mean(s
 plot(stepsBy5MinInterval$interval, stepsBy5MinInterval$mean, type = "l", xlab = "5-minute interval", ylab = "Average of steps", main = "All days average number of steps")
 ```
 
-Interval that contains the maximum numbr of steps:
+Interval that contains the maximum number of steps:
 ```{r, echo=TRUE}
 FiveMinMaxInterval <- stepsBy5MinInterval[which.max(stepsBy5MinInterval$mean), 1]
 ```

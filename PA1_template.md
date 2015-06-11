@@ -82,7 +82,7 @@ plot(stepsBy5MinInterval$interval, stepsBy5MinInterval$mean, type = "l", xlab = 
 
 ![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
 
-Interval that contains the maximum numbr of steps:
+Interval that contains the maximum number of steps:
 
 ```r
 FiveMinMaxInterval <- stepsBy5MinInterval[which.max(stepsBy5MinInterval$mean), 1]
